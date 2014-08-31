@@ -93,18 +93,21 @@ module Typy{
                 }catch(e){
                     this._internalPromiseReject(e);
                 }
-
             }
         }
 
         public reject(value: any): void {
-            var result: any;
+            var result: any = value;
             if (this._onRejection) {
-                result = this._onRejection.call(null, value);
-                this._internalPromiseFulfill(result);
-            }else{
-                this._internalPromiseReject(value);
+                try{
+                    result = this._onRejection.call(null, value);
+                    this._internalPromiseFulfill(result);
+                    return;
+                }catch(e){
+                    result = e;
+                }
             }
+            this._internalPromiseReject(result);
         }
 
         public promise(): Promise {

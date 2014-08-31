@@ -197,6 +197,19 @@ function exec(Promise, prefix) {
                 done();
             });
         });
+
+        it(prefix + "rejectのハンドラの中で例外がおこった場合は、rejectになる", function(done){
+
+            (new Promise(function(resolve, reject){
+                reject(new Error("AAA"));
+            })).catch(function(result){
+                expect(result.message).toEqual("AAA");
+                throw new Error("BBB");
+            }).catch(function(err){
+                expect(err.message).toEqual("BBB");
+                done();
+            });
+        });
     });
 }
 

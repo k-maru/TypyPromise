@@ -97,6 +97,8 @@ module Typy{
             if (this._onRejection) {
                 result = this._onRejection.call(null, value);
                 this._internalPromiseFulfill(result);
+            }else{
+                this._internalPromiseReject(value);
             }
         }
 
@@ -112,9 +114,15 @@ module Typy{
         private _id: number = Date.now();
 
         constructor(resolver: (onFulfillment?: DoneAction, onRejection?: DoneAction) => void) {
-            resolver(
-                this._handleFulfill.bind(this),
-                this._handleReject.bind(this));
+
+            try{
+                resolver(
+                    this._handleFulfill.bind(this),
+                    this._handleReject.bind(this));
+            }catch(e){
+                this._handleReject(e);
+            }
+
         }
 
         public then(onFulfilled: DoneAction, onRejected?: DoneAction): Promise {

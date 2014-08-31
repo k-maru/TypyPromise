@@ -191,15 +191,7 @@ module Typy{
 
         public static reject(value: any): Promise {
             return new Promise((onFulfilled, onRejected) => {
-                if(isThenable(value)){
-                    value.then((result: any) => {
-                        onFulfilled(result);
-                    }, (result: any) => {
-                        onRejected(result);
-                    });
-                }else{
-                    onRejected(value);
-                }
+                onRejected(value);
             });
         }
     }

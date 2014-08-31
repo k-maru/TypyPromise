@@ -14,7 +14,7 @@ function exec(Promise, prefix) {
         it(prefix + "結果にPromise", function(done){
 
             Promise.resolve(new Promise(function(onfulfilled){
-               onfulfilled("aaa");
+                onfulfilled("aaa");
             })).then(function(result){
                 expect(result).toEqual("aaa");
                 done();
@@ -41,20 +41,21 @@ function exec(Promise, prefix) {
         });
 
         it(prefix + "結果にPromise", function(done){
-
-            Promise.reject(new Promise(function(onfulfilled, onrejected){
+            var p = new Promise(function(onfulfilled, onrejected){
                 onrejected("aaa");
-            })).then(undefined, function(result){
-                expect(result).toEqual("aaa");
+            });
+            Promise.reject(p).then(undefined, function(result){
+                expect(result).toEqual(p);
                 done();
             });
         });
 
         it(prefix + "結果にResolve Promise", function(done){
-            Promise.reject(new Promise(function(onfulfilled, onrejected){
+            var p = new Promise(function(onfulfilled, onrejected){
                 onfulfilled("aaa");
-            })).then(function(result){
-                expect(result).toEqual("aaa");
+            });
+            Promise.reject(p).then(undefined, function(result){
+                expect(result).toEqual(p);
                 done();
             });
         });

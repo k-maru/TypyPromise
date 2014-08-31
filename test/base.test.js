@@ -49,13 +49,13 @@ function exec(Promise, prefix) {
 
                 resolve("AAA", "bbb");
             })).then(function (result, result2) {
-                expect(result).toEqual("AAA");
-                expect(result2).toBeUndefined();
-                return "BBB";
-            }).then(function (result) {
-                expect(result).toEqual("BBB");
-                done();
-            });
+                    expect(result).toEqual("AAA");
+                    expect(result2).toBeUndefined();
+                    return "BBB";
+                }).then(function (result) {
+                    expect(result).toEqual("BBB");
+                    done();
+                });
         });
 
         it(prefix + "(then)Rejectに引数を複数渡しても先頭しか評価されない", function(done){
@@ -64,12 +64,12 @@ function exec(Promise, prefix) {
                 //expect(reject.length).toEqual(1);
                 reject(new Error("AAA"), new Error("BBB"));
             })).then(function (result) {
-                fail();
-            }, function (result, result2) {
-                expect(result.message).toEqual("AAA");
-                expect(result2).toBeUndefined();
-                done();
-            });
+                    fail();
+                }, function (result, result2) {
+                    expect(result.message).toEqual("AAA");
+                    expect(result2).toBeUndefined();
+                    done();
+                });
         });
 
         it(prefix + "(catch)Rejectに引数を複数渡しても先頭しか評価されない", function(done){
@@ -78,10 +78,10 @@ function exec(Promise, prefix) {
                 //expect(reject.length).toEqual(1);
                 reject(new Error("AAA"), new Error("BBB"));
             })).catch(function (result, result2) {
-                expect(result.message).toEqual("AAA");
-                expect(result2).toBeUndefined();
-                done();
-            });
+                    expect(result.message).toEqual("AAA");
+                    expect(result2).toBeUndefined();
+                    done();
+                });
         });
 
         it(prefix + "constructor の 実行コンテキスト", function(done){
@@ -95,27 +95,27 @@ function exec(Promise, prefix) {
             (new Promise(function (resolve, reject) {
                 resolve("aaa");
             }).then(function(result){
-                expect(this).toEqual(window || global);
-                done();
-            }));
+                    expect(this).toEqual(window || global);
+                    done();
+                }));
         });
 
         it(prefix + "then reject の 実行コンテキスト", function(done){
             (new Promise(function (resolve, reject) {
                 reject("aaa");
             }).then(null, function(result){
-                expect(this).toEqual(window || global);
-                done();
-            }));
+                    expect(this).toEqual(window || global);
+                    done();
+                }));
         });
 
         it(prefix + "catch の 実行コンテキスト", function(done){
             (new Promise(function (resolve, reject) {
                 reject("aaa");
             }).catch(function(result){
-                expect(this).toEqual(window || global);
-                done();
-            }));
+                    expect(this).toEqual(window || global);
+                    done();
+                }));
         });
 
         it(prefix + "then の内容は非同期で実行される", function(done){
@@ -124,9 +124,9 @@ function exec(Promise, prefix) {
                 result = "BBB";
                 resolve();
             }).then(function(r){
-                expect(result).toEqual("CCC");
-                done();
-            }));;
+                    expect(result).toEqual("CCC");
+                    done();
+                }));;
 
             expect(result).toEqual("BBB");
             result = "CCC";
@@ -137,7 +137,7 @@ function exec(Promise, prefix) {
             var result = "AAA";
 
             var p = new Promise(function(resolve){
-               resolve("BBB");
+                resolve("BBB");
             });
 //
             p.then(function(r){
@@ -148,7 +148,7 @@ function exec(Promise, prefix) {
                 result = "CCC";
             }).then(function(){
                 expect(result).toEqual("CCC");
-                result = "DDD";
+                //result = "DDD";
                 done();
             });
 //
@@ -157,6 +157,17 @@ function exec(Promise, prefix) {
                 result = "ZZZ";
 
             });
+        });
+
+        it(prefix + "エラーの場合は子孫のキャッチがあれば利用される", function(done){
+            (new Promise(function(resolve, reject){
+                reject(new Error("AAA"));
+            })).then(function(result){
+                    fail();
+                }).then(undefined, function(result){
+                    expect(result.message).toEqual("AAA");
+                    done();
+                });
         });
     });
 }

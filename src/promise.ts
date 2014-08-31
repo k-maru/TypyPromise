@@ -87,8 +87,13 @@ module Typy{
         public fulfill(value: any): void {
             var result: any;
             if (this._onFulfillment) {
-                result = this._onFulfillment.call(null, value);
-                this._internalPromiseFulfill(result);
+                try{
+                    result = this._onFulfillment.call(null, value);
+                    this._internalPromiseFulfill(result);
+                }catch(e){
+                    this._internalPromiseReject(e);
+                }
+
             }
         }
 

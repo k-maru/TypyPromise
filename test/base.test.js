@@ -184,6 +184,19 @@ function exec(Promise, prefix) {
             });
 
         });
+
+        it(prefix + "fulfillのハンドラの中で例外がおこった場合は、rejectになる", function(done){
+
+            (new Promise(function(resolve){
+                resolve("AAA");
+            })).then(function(result){
+                expect(result).toEqual("AAA");
+                throw new Error("BBB");
+            }).catch(function(err){
+                expect(err.message).toEqual("BBB");
+                done();
+            });
+        });
     });
 }
 

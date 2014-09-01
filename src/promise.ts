@@ -70,7 +70,6 @@ module Typy{
         private _internalPromise: Promise;
         private _internalPromiseFulfill: DoneAction;
         private _internalPromiseReject: DoneAction;
-        private _id = Date.now();
 
         constructor(private _onFulfillment: DoneAction,
                     private _onRejection: DoneAction) {
@@ -85,10 +84,10 @@ module Typy{
         }
 
         public fulfill(value: any): void {
-            var result: any;
+            var result: any = value;
             if (this._onFulfillment) {
                 try{
-                    result = this._onFulfillment.call(null, value);
+                    result = this._onFulfillment.call(null, result);
                     this._internalPromiseFulfill(result);
                 }catch(e){
                     this._internalPromiseReject(e);
@@ -100,7 +99,7 @@ module Typy{
             var result: any = value;
             if (this._onRejection) {
                 try{
-                    result = this._onRejection.call(null, value);
+                    result = this._onRejection.call(null, result);
                     this._internalPromiseFulfill(result);
                     return;
                 }catch(e){
@@ -116,10 +115,9 @@ module Typy{
     }
 
     export class Promise{
-        private _deferreds: InnerPromise[] = [];
+        private _inners: InnerPromise[] = [];
         private _state: State = State.Pending;
         private _result: any;
-        private _id: number = Date.now();
 
         constructor(resolver: (onFulfillment?: DoneAction, onRejection?: DoneAction) => void) {
 
@@ -134,23 +132,23 @@ module Typy{
         }
 
         public then(onFulfilled: DoneAction, onRejected?: DoneAction): Promise {
-            var child = new InnerPromise(onFulfilled, onRejected);
+            var inner = new InnerPromise(onFulfilled, onRejected);
 
             if (this._state !== State.Pending) {
                 if (this._state === State.Fulfilled) {
-                    async.bind(null, child.fulfill, child).call(null, this._result);
+                    async.bind(null, inner.fulfill, inner).call(null, this._result);
                     //child.fulfill.call(child, this._result);
                 }
 
                 if (this._state === State.Rejected) {
-                    async.bind(null, child.reject, child).call(null, this._result);
+                    async.bind(null, inner.reject, inner).call(null, this._result);
                     //child.reject.call(child, this._result);
                 }
             } else {
-                this._deferreds.push(child);
+                this._inners.push(inner);
             }
 
-            return child.promise();
+            return inner.promise();
         }
 
         public "catch"(onRejected: DoneAction): Promise {
@@ -158,35 +156,35 @@ module Typy{
         }
 
         private _handleFulfill(result: any): void {
-            var i = 0, l = this._deferreds.length,
-                child: InnerPromise;
+            var i = 0, l = this._inners.length,
+                inner: InnerPromise;
 
             if (this._state !== State.Pending) {
                 return;
             }
             this._state = State.Fulfilled;
             for (; i < l; i++) {
-                child = this._deferreds[i];
-                async.bind(null, child.fulfill, child).call(null, result);
+                inner = this._inners[i];
+                async.bind(null, inner.fulfill, inner).call(null, result);
                 //child.fulfill.call(child, result);
             }
-            this._deferreds = [];
+            this._inners = [];
             this._result = result;
         }
 
         private _handleReject(result: any): void {
-            var i = 0, l = this._deferreds.length,
-                child: InnerPromise;
+            var i = 0, l = this._inners.length,
+                innser: InnerPromise;
             if (this._state !== State.Pending) {
                 return;
             }
             this._state = State.Rejected;
             for (; i < l; i++) {
-                child = this._deferreds[i];
-                async.bind(null, child.reject, child).call(null, result);
+                innser = this._inners[i];
+                async.bind(null, innser.reject, innser).call(null, result);
                 //child.reject.call(child, result);
             }
-            this._deferreds = [];
+            this._inners = [];
             this._result = result;
         }
 

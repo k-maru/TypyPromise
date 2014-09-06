@@ -65,6 +65,8 @@ module Typy{
         return Object.prototype.toString.call(value.then) === "[object Function]";
     }
 
+    var globCatch: DoneAction;
+
     class InnerPromise{
 
         private _internalPromise: Promise;
@@ -118,6 +120,7 @@ module Typy{
         private _inners: InnerPromise[] = [];
         private _state: State = State.Pending;
         private _result: any;
+        private _hasChain: boolean = false;
 
         constructor(resolver: (onFulfillment?: DoneAction, onRejection?: DoneAction) => void) {
 
@@ -133,6 +136,7 @@ module Typy{
 
         public then(onFulfilled: DoneAction, onRejected?: DoneAction): Promise {
             var inner = new InnerPromise(onFulfilled, onRejected);
+            this._hasChain = true;
 
             if (this._state !== State.Pending) {
                 if (this._state === State.Fulfilled) {
@@ -174,18 +178,24 @@ module Typy{
 
         private _handleReject(result: any): void {
             var i = 0, l = this._inners.length,
-                innser: InnerPromise;
+                inner: InnerPromise;
             if (this._state !== State.Pending) {
                 return;
             }
             this._state = State.Rejected;
             for (; i < l; i++) {
-                innser = this._inners[i];
-                async.bind(null, innser.reject, innser).call(null, result);
+                inner = this._inners[i];
+                async.bind(null, inner.reject, inner).call(null, result);
                 //child.reject.call(child, result);
             }
             this._inners = [];
             this._result = result;
+            if(l === 0){
+                //TOOD: global handler
+                if(globCatch){
+                    globCatch(result);
+                }
+            }
         }
 
 
@@ -208,5 +218,9 @@ module Typy{
                 onRejected(value);
             });
         }
+
+        //public static globalCatch(value?: ({resolved: boolean; value: any;}) => void): void {
+        //    globCatch = value;
+        //}
     }
 }

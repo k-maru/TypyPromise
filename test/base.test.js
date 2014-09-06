@@ -210,6 +210,21 @@ function exec(Promise, prefix) {
                 done();
             });
         });
+
+        it(prefix + "非同期のコンストラクタ", function(done){
+
+            (new Promise(function(resolve, reject){
+                setTimeout(function(){
+                    resolve("AAA");
+                },1);
+
+            })).then(function(result){
+                expect(result).toEqual("AAA");
+                done();
+            });
+
+        });
+
     });
 }
 

@@ -65,7 +65,7 @@ module Typy{
         return Object.prototype.toString.call(value.then) === "[object Function]";
     }
 
-    var globCatch: DoneAction;
+    var globCatch: (result: {resolved: boolean; value: any;}) => void;
 
     class InnerPromise{
 
@@ -166,6 +166,10 @@ module Typy{
             if (this._state !== State.Pending) {
                 return;
             }
+            if(isThenable(result)){
+                this._handleThenable(result);
+                return;
+            };
             this._state = State.Fulfilled;
             for (; i < l; i++) {
                 inner = this._inners[i];
@@ -182,6 +186,10 @@ module Typy{
             if (this._state !== State.Pending) {
                 return;
             }
+            //if(isThenable(result)){
+            //    this._handleThenable(result);
+            //    return;
+            //};
             this._state = State.Rejected;
             for (; i < l; i++) {
                 inner = this._inners[i];
@@ -193,23 +201,27 @@ module Typy{
             if(l === 0){
                 //TOOD: global handler
                 if(globCatch){
-                    globCatch(result);
+                    async(globCatch, null, {
+                        value: result,
+                        resolved: true
+                    });
+                    //globCatch();
                 }
             }
+        }
+
+        private _handleThenable(thenable: {then: (onFulfilled: DoneAction, onRejected?: DoneAction) => any}): void {
+            thenable.then((result) => {
+                this._handleFulfill(result);
+            }, (result) => {
+                this._handleReject(result);
+            });
         }
 
 
         public static resolve(value: any): Promise {
             return new Promise((onFulfilled, onRejected) => {
-                if(isThenable(value)){
-                    value.then((result: any) => {
-                        onFulfilled(result);
-                    }, (result: any) => {
-                        onRejected(result);
-                    });
-                }else{
-                    onFulfilled(value);
-                }
+                onFulfilled(value);
             });
         }
 
@@ -219,8 +231,8 @@ module Typy{
             });
         }
 
-        //public static globalCatch(value?: ({resolved: boolean; value: any;}) => void): void {
-        //    globCatch = value;
-        //}
+        public static globalCatch(value?: (result: {resolved: boolean; value: any;}) => void): void {
+            globCatch = value;
+        }
     }
 }

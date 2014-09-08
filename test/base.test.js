@@ -212,7 +212,6 @@ function exec(Promise, prefix) {
         });
 
         it(prefix + "非同期のコンストラクタ", function(done){
-
             (new Promise(function(resolve, reject){
                 setTimeout(function(){
                     resolve("AAA");
@@ -222,9 +221,67 @@ function exec(Promise, prefix) {
                 expect(result).toEqual("AAA");
                 done();
             });
-
         });
 
+        it(prefix + "resolveにfulfillのPromise", function(done){
+            var p = new Promise(function(resolve, reject){
+                var p1 = new Promise(function(resolve, reject){
+                    setTimeout(function(){
+                        resolve("AAA");
+                    }, 1);
+                });
+                resolve(p1);
+            });
+            p.then(function(result){
+                expect(result).toEqual("AAA");
+                done();
+            });
+        });
+
+        it(prefix + "resolveにrejectのPromise", function(done){
+            var p = new Promise(function(resolve, reject){
+                var p1 = new Promise(function(resolve, reject){
+                    setTimeout(function(){
+                        reject("AAA");
+                    }, 1);
+                });
+                resolve(p1);
+            });
+            p.then(undefined, function(result){
+                expect(result).toEqual("AAA");
+                done();
+            });
+        });
+
+        it(prefix + "rejectにfulfillのPromise", function(done){
+            var p1 = new Promise(function(resolve, reject){
+                setTimeout(function(){
+                    resolve("AAA");
+                }, 1);
+            });
+            var p = new Promise(function(resolve, reject){
+                reject(p1);
+            });
+            p.then(undefined, function(result){
+                expect(result).toEqual(p1);
+                done();
+            });
+        });
+
+        it(prefix + "rejectにrejectのPromise", function(done){
+            var p1 = new Promise(function(resolve, reject){
+                setTimeout(function(){
+                    reject("AAA");
+                }, 1);
+            });
+            var p = new Promise(function(resolve, reject){
+                reject(p1);
+            });
+            p.then(undefined, function(result){
+                expect(result).toEqual(p1);
+                done();
+            });
+        });
     });
 }
 

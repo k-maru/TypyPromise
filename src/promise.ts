@@ -34,7 +34,9 @@ if (!Function.prototype.bind) {
 module Typy{
 
     declare function setImmediate(callback: Function): void;
+    declare function setTimeout(callback: Function, timeout: number): number;
     declare var global: any;
+    declare var window: any;
 
     export interface DoneAction{
         (args: any): void;

@@ -3,7 +3,30 @@
 
 module.exports = function(config) {
   config.set({
+    // browser stack
+    // global config of your BrowserStack account
+    browserStack: {
+      username: '',
+      accessKey: '',
+      captureTimeout: 180
+    },
 
+    // define browsers
+    customLaunchers: {
+      bs_IE8: {
+        base: 'BrowserStack',
+        browser: 'ie',
+        browser_version: '8.0',
+        os: 'Windows',
+        os_version: '7'
+      },
+      bs_iphone5: {
+        base: 'BrowserStack',
+        device: 'iPhone 5',
+        os: 'ios',
+        os_version: '6.0'
+      }
+    },
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
 
@@ -56,11 +79,11 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome', 'ChromeCanary', 'Firefox', 'FirefoxAurora', 'FirefoxNightly', 'IE', 'PhantomJS'],
+    browsers: ['Chrome', 'ChromeCanary', 'Firefox', 'FirefoxAurora', 'FirefoxNightly', 'IE', 'PhantomJS', 'Safari'],
 
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false
+    singleRun: true
   });
 };

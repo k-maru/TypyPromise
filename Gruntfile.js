@@ -8,9 +8,11 @@ module.exports = function(grunt){
                 options: {
                     sourceMap: true,
                     declaration: true,
-                    watch: {
+                    //noLib: true,
+                    references: "core",
+                    watch: grunt.option("watch") ? {
                         atBegin: true
-                    }
+                    }: false
                 }
             }
         }

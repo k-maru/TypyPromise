@@ -24,7 +24,7 @@ function exec(Promise, prefix) {
         it(prefix + "結果にReject Promise", function(done){
             Promise.resolve(new Promise(function(onfulfilled, onrejected){
                 onrejected("aaa");
-            })).catch(function(result){
+            }))["catch"](function(result){
                 expect(result).toEqual("aaa");
                 done();
             });

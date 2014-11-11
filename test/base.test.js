@@ -33,7 +33,7 @@ function exec(Promise, prefix) {
         it(prefix + "Catchのテスト", function (done) {
             (new Promise(function (resolve, reject) {
                 reject(new Error("AAA"));
-            })).catch(function (result) {
+            }))["catch"](function (result) {
                     expect(result.message).toEqual("AAA");
                     return "BBB"
                 }).then(function (result) {
@@ -77,11 +77,11 @@ function exec(Promise, prefix) {
                 //PhantomJSのbindがshimなため失敗する
                 //expect(reject.length).toEqual(1);
                 reject(new Error("AAA"), new Error("BBB"));
-            })).catch(function (result, result2) {
-                    expect(result.message).toEqual("AAA");
-                    expect(result2).toBeUndefined();
-                    done();
-                });
+            }))["catch"](function (result, result2) {
+                expect(result.message).toEqual("AAA");
+                expect(result2).toBeUndefined();
+                done();
+            });
         });
 
         it(prefix + "constructor の 実行コンテキスト", function(done){
@@ -112,7 +112,7 @@ function exec(Promise, prefix) {
         it(prefix + "catch の 実行コンテキスト", function(done){
             (new Promise(function (resolve, reject) {
                 reject("aaa");
-            }).catch(function(result){
+            })["catch"](function(result){
                     expect(this).toEqual(window || global);
                     done();
                 }));
@@ -178,7 +178,7 @@ function exec(Promise, prefix) {
 
             (new Promise(function(){
                 throw new Error("AAA");
-            })).catch(function(err){
+            }))["catch"](function(err){
                 expect(err.message).toEqual("AAA");
                 done();
             });
@@ -192,7 +192,7 @@ function exec(Promise, prefix) {
             })).then(function(result){
                 expect(result).toEqual("AAA");
                 throw new Error("BBB");
-            }).catch(function(err){
+            })["catch"](function(err){
                 expect(err.message).toEqual("BBB");
                 done();
             });
@@ -202,10 +202,10 @@ function exec(Promise, prefix) {
 
             (new Promise(function(resolve, reject){
                 reject(new Error("AAA"));
-            })).catch(function(result){
+            }))["catch"](function(result){
                 expect(result.message).toEqual("AAA");
                 throw new Error("BBB");
-            }).catch(function(err){
+            })["catch"](function(err){
                 expect(err.message).toEqual("BBB");
                 done();
             });

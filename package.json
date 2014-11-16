@@ -1,9 +1,8 @@
 {
   "private": true,
   "name": "TypyPromise",
-  "version": "0.0.0",
-  "description": "Promise with more functions",
-  "main": "TypyPromise.js",
+  "version": "0.5.0",
+  "description": "Promise library",
   "dependencies": {},
   "devDependencies": {
     "grunt": "^0.4.5",
@@ -20,13 +19,11 @@
     "karma-phantomjs-launcher": "^0.1.4",
     "karma-safari-launcher": "^0.1.1"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "keywords": [
     "JavaScript",
     "Promise"
   ],
+  "main": "bin/node/promise.js",
   "author": "kazuhide maruyama",
   "license": "MIT"
 }

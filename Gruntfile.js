@@ -49,6 +49,33 @@ module.exports = function(grunt){
                 src: ["test/"]
             }
         }
+    });
 
+    grunt.registerTask("bowerconfig", function(){
+        var pkg = grunt.file.readJSON("package.json"),
+            config = {
+              "name": pkg.name,
+              "version": pkg.version,
+              "homepage": pkg.homepage,
+              "description": pkg.description,
+              "main": "bin/browser/Typy.Promise.js",
+              "keywords": pkg.keywords,
+              "authors": [
+                pkg.author
+              ],
+              "license": pkg.license,
+              "ignore": [
+                "**/.*",
+                "node_modules",
+                "bower_components",
+                "test",
+                "src",
+                "Gruntfile.js",
+                "karma.conf.js",
+                "package.json",
+                "bin/node"
+              ]
+          };
+          grunt.file.write("bower.json", JSON.stringify(config, null, "  "));
     });
 }

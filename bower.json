@@ -1,0 +1,25 @@
+{
+  "name": "TypyPromise",
+  "version": "0.5.0",
+  "description": "Promise library",
+  "main": "bin/browser/Typy.Promise.js",
+  "keywords": [
+    "JavaScript",
+    "Promise"
+  ],
+  "authors": [
+    "kazuhide maruyama"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "src",
+    "Gruntfile.js",
+    "karma.conf.js",
+    "package.json",
+    "bin/node"
+  ]
+}

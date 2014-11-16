@@ -44,9 +44,11 @@ function exec(Promise, prefix) {
 
         it(prefix + "Resolveに引数を複数渡しても先頭しか評価されない", function(done){
             (new Promise(function (resolve, reject) {
-                //PhantomJSのbindがshimなため失敗する
-                //expect(resolve.length).toEqual(1);
 
+                //PhantomJSのbindがshimなためFunction#bindが実装されているもののみ
+                if(Function.prototype.bind){
+                    expect(resolve.length).toEqual(1);
+                }
                 resolve("AAA", "bbb");
             })).then(function (result, result2) {
                 expect(result).toEqual("AAA");
@@ -60,8 +62,10 @@ function exec(Promise, prefix) {
 
         it(prefix + "(then)Rejectに引数を複数渡しても先頭しか評価されない", function(done){
             (new Promise(function (resolve, reject) {
-                //PhantomJSのbindがshimなため失敗する
-                //expect(reject.length).toEqual(1);
+                //PhantomJSのbindがshimなためFunction#bindが実装されているもののみ
+                if(Function.prototype.bind){
+                    expect(reject.length).toEqual(1);
+                }
                 reject(new Error("AAA"), new Error("BBB"));
             })).then(function (result) {
                 fail();
@@ -74,8 +78,10 @@ function exec(Promise, prefix) {
 
         it(prefix + "(catch)Rejectに引数を複数渡しても先頭しか評価されない", function(done){
             (new Promise(function (resolve, reject) {
-                //PhantomJSのbindがshimなため失敗する
-                //expect(reject.length).toEqual(1);
+                //PhantomJSのbindがshimなためFunction#bindが実装されているもののみ
+                if(Function.prototype.bind){
+                    expect(reject.length).toEqual(1);
+                }
                 reject(new Error("AAA"), new Error("BBB"));
             }))["catch"](function (result, result2) {
                 expect(result.message).toEqual("AAA");
@@ -144,32 +150,32 @@ function exec(Promise, prefix) {
         });
 
         //Firefoxはthenのチェインのほうが先に走る
-//        it(prefix + "複数のthenは設定された順番に子供より先に呼ばれる", function(done){
-//
-//            var result = "AAA";
-//
-//            var p = new Promise(function(resolve){
-//                resolve("BBB");
-//            });
-////
-//            p.then(function(r){
-//                expect(result).toEqual("AAA");
-//                result = "BBB";
-//            }).then(function(){
-//                expect(result).toEqual("ZZZ");
-//                result = "CCC";
-//            }).then(function(){
-//                expect(result).toEqual("CCC");
-//                //result = "DDD";
-//                done();
-//            });
-////
-//            p.then(function(r){
-//                expect(result).toEqual("BBB");
-//                result = "ZZZ";
-//
-//            });
-//        });
+       it(prefix + "複数のthenは設定された順番に子供より先に呼ばれる", function(done){
+
+           var result = "AAA";
+
+           var p = new Promise(function(resolve){
+               resolve("BBB");
+           });
+
+           p.then(function(r){
+               expect(result).toEqual("AAA");
+               result = "BBB";
+           }).then(function(){
+               expect(result).toEqual("ZZZ");
+               result = "CCC";
+           }).then(function(){
+               expect(result).toEqual("CCC");
+               //result = "DDD";
+               done();
+           });
+
+           p.then(function(r){
+               expect(result).toEqual("BBB");
+               result = "ZZZ";
+
+           });
+       });
 
         it(prefix + "エラーの場合は子孫のキャッチがあれば利用される", function(done){
             (new Promise(function(resolve, reject){

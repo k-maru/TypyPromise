@@ -10,3 +10,4 @@ bower.json
 karma.conf.js
 bin/browser
 bin/node/*.d.ts
+bin/node/*.js.map

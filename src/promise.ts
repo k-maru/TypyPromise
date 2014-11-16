@@ -154,6 +154,16 @@ module Typy{
 
 
         public static resolve(value: any): Promise {
+            if(value instanceof Promise){
+                return value;
+            }
+            if(util.isThenable(value)){
+                return new Promise((onFulfilled, onRejected) => {
+                    util.async(() => {
+                        value.then(onFulfilled, onRejected);
+                    }, null);
+                });
+            }
             return new Promise((onFulfilled, onRejected) => {
                 onFulfilled(value);
             });

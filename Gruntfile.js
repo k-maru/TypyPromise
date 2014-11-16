@@ -4,7 +4,7 @@ module.exports = function(grunt){
     grunt.loadNpmTasks("grunt-browserify");
     grunt.loadNpmTasks("grunt-jasmine-node");
 
-    grunt.registerTask("build", ["typescript:default", "browserify:default"]);
+    grunt.registerTask("build", ["typescript:default", "browserify:default", "jasmine_node:default"]);
     grunt.registerTask("watch", ["typescript:default"]);
     grunt.registerTask("default", ["build"]);
 
@@ -26,7 +26,7 @@ module.exports = function(grunt){
                     module: "commonjs",
                     watch: grunt.option("watch") ? {
                         atBegin: true,
-                        after: ["browserify:default"]
+                        after: ["browserify:default", "jasmine_node:default"]
                     }: false
                 }
             }

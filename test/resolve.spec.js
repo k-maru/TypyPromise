@@ -75,12 +75,3 @@ if(typeof require !== "undefined"){
 }else{
     exec(Typy.Promise);
 }
-
-// if((window || global).Promise){
-//     exec(Promise, "Native:");
-// }
-//if(require){
-//    exec(require("../bin/node/promise.js").Promise);
-//}else{
-//    exec(Typy.Promise);
-//}

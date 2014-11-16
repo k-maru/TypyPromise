@@ -164,14 +164,14 @@ function exec(Promise, prefix) {
             (new Promise(function(resolve, reject){
                 reject(new Error("AAA"));
             })).then(function(result){
-                    fail();
-                }).then(function(result){
+                fail();
+            }).then(function(result){
 //                    expect(result.message).toEqual("AAA");
 //                    done();
-                }).then(undefined, function(result){
-                    expect(result.message).toEqual("AAA");
-                    done();
-                });
+            }).then(undefined, function(result){
+                expect(result.message).toEqual("AAA");
+                done();
+            });
         });
 
         it(prefix + "コンストラクターで例外が発生した場合はrejectになる", function(done){
@@ -285,7 +285,15 @@ function exec(Promise, prefix) {
     });
 }
 
-if((window || global).Promise){
+var glob = typeof window !== "undefined" ? window :
+           typeof global !== "undefined" ? global : {};
+
+if(glob.Promise){
     exec(Promise, "Native:");
 }
-exec(Typy.Promise);
+
+if(typeof require !== "undefined"){
+    exec(require("../bin/node/promise.js").Promise);
+}else{
+    exec(Typy.Promise);
+}

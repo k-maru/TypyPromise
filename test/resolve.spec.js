@@ -63,7 +63,24 @@ function exec(Promise, prefix) {
 
 }
 
-if((window || global).Promise){
+var glob = typeof window !== "undefined" ? window :
+           typeof global !== "undefined" ? global : {};
+
+if(glob.Promise){
     exec(Promise, "Native:");
 }
-exec(Typy.Promise);
+
+if(typeof require !== "undefined"){
+    exec(require("../bin/node/promise.js").Promise);
+}else{
+    exec(Typy.Promise);
+}
+
+// if((window || global).Promise){
+//     exec(Promise, "Native:");
+// }
+//if(require){
+//    exec(require("../bin/node/promise.js").Promise);
+//}else{
+//    exec(Typy.Promise);
+//}

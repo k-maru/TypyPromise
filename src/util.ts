@@ -6,7 +6,6 @@ declare var window: any;
 export function bind(target: Function, context: any, ...args: any[]){
     if(Function.prototype.bind){
         args.unshift(context);
-        //return target.bind.apply(null, args);
         return Function.prototype.bind.apply(target, args);
     }
 
@@ -22,7 +21,6 @@ export function async(callback: Function, context: any, ...args: any[]): void{
                typeof global !== "undefined" ? global :
                {};
 
-    //var glob = window || global || {};
     if(glob.setImmediate){
         glob.setImmediate(() => {
             callback.apply(context, args);

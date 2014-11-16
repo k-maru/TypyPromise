@@ -1,2 +1,6 @@
 var Typy = require("../bin/node/promise.js");
-window.Typy = Typy;
+if(window.Typy){
+    window.Typy.Promise = Typy.Promise;
+}else{
+    window.Typy = Typy;
+}

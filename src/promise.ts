@@ -76,7 +76,6 @@ module Typy{
         for (; i < l; i++) {
             inner = this._inners[i];
             util.bind(util.async, null, inner.fulfill, inner).call(null, result);
-            //async.bind(null, inner.fulfill, inner).call(null, result);
         }
         this._inners = [];
         this._result = result;
@@ -92,7 +91,6 @@ module Typy{
         for (; i < l; i++) {
             inner = this._inners[i];
             util.bind(util.async, null, inner.reject, inner).call(null, result);
-            //async.bind(null, inner.reject, inner).call(null, result);
         }
         this._inners = [];
         this._result = result;
@@ -117,9 +115,7 @@ module Typy{
         constructor(resolver: (onFulfillment?: DoneAction, onRejection?: DoneAction) => void) {
             try{
                 resolver(
-                    //handleFulfill.bind(this),
                     util.bind(handleFulfill, this),
-                    //handleReject.bind(this)
                     util.bind(handleReject, this)
                 );
             }catch(e){
@@ -134,12 +130,10 @@ module Typy{
             if (this._state !== State.Pending) {
                 if (this._state === State.Fulfilled) {
                     util.bind(util.async, null, inner.fulfill, inner).call(null, this._result);
-                    //async.bind(null, inner.fulfill, inner).call(null, this._result);
                 }
 
                 if (this._state === State.Rejected) {
                     util.bind(util.async, null, inner.reject, inner).call(null, this._result);
-                    //async.bind(null, inner.reject, inner).call(null, this._result);
                 }
             } else {
                 this._inners.push(inner);
@@ -151,7 +145,6 @@ module Typy{
         public "catch"(onRejected: DoneAction): Promise {
             return this.then(null, onRejected);
         }
-
 
         public static resolve(value: any): Promise {
             if(value instanceof Promise){

@@ -1,5 +1,5 @@
 {
-  "name": "TypyPromise",
+  "name": "typy-promise",
   "version": "0.5.0",
   "description": "Promise library",
   "dependencies": {},

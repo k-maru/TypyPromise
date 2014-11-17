@@ -45,7 +45,7 @@ function exec(Promise, prefix) {
     }
 
 
-    describe(prefix + "all test", function () {
+    describe(prefix + "race test", function () {
 
         it(prefix + "全部成功するプロミス", function(done){
 
@@ -54,41 +54,33 @@ function exec(Promise, prefix) {
             promises.push(asyncResolve("b", 500));
             promises.push(asyncResolve("c", 100));
 
-            Promise.all(promises).then(function(results){
-
-                expect(results[0]).toBe("a");
-                expect(results[1]).toBe("b");
-                expect(results[2]).toBe("c");
-                done();
+            Promise.race(promises).then(function(result){
+                expect(result).toBe("c");
             });
+            setTimeout(function(){
+                done();
+            }, 1100);
         });
 
         it(prefix + "失敗した時点で後ろは評価されない", function(done){
-            var promises = [],
-                rejected = false;
-            promises.push(new Promise(function(resolve, reject){
-                setTimeout(function(){
-                    expect(rejected).toBe(true);
-                    done();
-                }, 1000);
-            }));
+            var promises = [];
             promises.push(asyncReject("b", 500));
-            promises.push(asyncResolve("c", 100));
+            promises.push(asyncResolve("c", 600));
 
-            Promise.all(promises).then(function(results){
-                throw new Error("error");
+            Promise.race(promises).then(function(results){
+                expect(true).toBe(false);
             }, function(result){
                 expect(result).toBe("b");
-                rejected = true;
             });
+            setTimeout(function(){
+                done();
+            }, 1000);
         });
 
         it(prefix + "即値でも成功", function(done){
             var promises = ["a", "b"];
-            Promise.all(promises).then(function(results){
-
-                expect(results[0]).toBe("a");
-                expect(results[1]).toBe("b");
+            Promise.race(promises).then(function(result){
+                expect(result).toBe("a");
                 done();
             });
         });
@@ -98,11 +90,9 @@ function exec(Promise, prefix) {
             var func = function(){
                     return "c"
                 },
-                promises = ["a", "b", func];
-            Promise.all(promises).then(function(results){
-                expect(results[0]).toBe("a");
-                expect(results[1]).toBe("b");
-                expect(results[2]).toBe(func);
+                promises = [func, "a", "b"];
+            Promise.race(promises).then(function(result){
+                expect(result).toBe(func);
                 done();
             });
         });
@@ -112,23 +102,18 @@ function exec(Promise, prefix) {
                 thenable2 = createThenable(),
                 thenable3 = createThenable();
 
-            Promise.all([thenable1, thenable2, thenable3]).then(function(results){
-                expect(results[0]).toBe("a");
-                expect(results[1]).toBe("b");
-                expect(results[2]).toBe("c");
-
+            Promise.race([thenable1, thenable2, thenable3]).then(function(result){
+                expect(result).toBe("b");
                 done();
             });
             setTimeout(function(){
-                thenable1.res("a");
                 thenable2.res("b");
-                thenable3.res("c");
             }, 0);
 
         });
 
         it(prefix + "配列ではなく単一の値", function(done){
-            Promise.all(asyncResolve("a", 100)).then(function(results){
+            Promise.race(asyncResolve("a", 100)).then(function(results){
                 //error
                 expect(true).toBe(false);
             }, function(){
@@ -142,7 +127,7 @@ function exec(Promise, prefix) {
 
         it(prefix + "単一のオブジェクト", function(done){
 
-            Promise.all({
+            Promise.race({
                 "A": asyncResolve("a", 100),
                 "B": asyncResolve("b", 200)
             }).then(function(results){

@@ -170,10 +170,11 @@ module Typy{
 
         public static all(values: any[]): Promise {
 
-            return new Promise((onFullfilled, onRejected) => {
+            return new Promise((onFulfilled, onRejected) => {
                 var i = 0, length, results: any = [],
                     resolvedLength = 0,
                     completed = false;
+                //TODO: iterableチェック
                 if(!util.isArray(values)){
                     return;
                 }
@@ -188,7 +189,7 @@ module Typy{
                             resolvedLength += 1;
                             if(length <= resolvedLength){
                                 completed = true;
-                                onFullfilled(results);
+                                onFulfilled(results);
                             }
                         }
                     })(i), (result) => {
@@ -197,9 +198,31 @@ module Typy{
                         }
                         completed = true;
                         onRejected(result);
-                    })
+                    });
                 }
-            })
+            });
+        }
+
+        public static race(values: any[]): Promise {
+            return new Promise((onFulfilled, onRejected) => {
+                var i = 0, length, completed = false;
+                //TODO: iterableチェック
+                if(!util.isArray(values)){
+                    return;
+                }
+                length = values.length;
+                for(; i < length; i++){
+                    Promise.resolve(values[i]).then((value) => {
+                        if(completed) return;
+                        completed = true;
+                        onFulfilled(value);
+                    }, (value) => {
+                        if(completed) return;
+                        completed = true;
+                        onRejected(value);
+                    });
+                }
+            });
         }
     }
 }

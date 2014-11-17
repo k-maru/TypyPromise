@@ -138,8 +138,9 @@ var Typy;
             });
         };
         Promise.all = function (values) {
-            return new Promise(function (onFullfilled, onRejected) {
+            return new Promise(function (onFulfilled, onRejected) {
                 var i = 0, length, results = [], resolvedLength = 0, completed = false;
+                //TODO: iterableチェック
                 if (!util.isArray(values)) {
                     return;
                 }
@@ -154,7 +155,7 @@ var Typy;
                             resolvedLength += 1;
                             if (length <= resolvedLength) {
                                 completed = true;
-                                onFullfilled(results);
+                                onFulfilled(results);
                             }
                         };
                     })(i), function (result) {
@@ -163,6 +164,29 @@ var Typy;
                         }
                         completed = true;
                         onRejected(result);
+                    });
+                }
+            });
+        };
+        Promise.race = function (values) {
+            return new Promise(function (onFulfilled, onRejected) {
+                var i = 0, length, completed = false;
+                //TODO: iterableチェック
+                if (!util.isArray(values)) {
+                    return;
+                }
+                length = values.length;
+                for (; i < length; i++) {
+                    Promise.resolve(values[i]).then(function (value) {
+                        if (completed)
+                            return;
+                        completed = true;
+                        onFulfilled(value);
+                    }, function (value) {
+                        if (completed)
+                            return;
+                        completed = true;
+                        onRejected(value);
                     });
                 }
             });

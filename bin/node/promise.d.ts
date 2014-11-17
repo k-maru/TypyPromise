@@ -12,6 +12,7 @@ declare module Typy {
         static resolve(value: any): Promise;
         static reject(value: any): Promise;
         static all(values: any[]): Promise;
+        static race(values: any[]): Promise;
     }
 }
 export = Typy;

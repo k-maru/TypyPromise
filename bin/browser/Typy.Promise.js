@@ -137,6 +137,36 @@ var Typy;
                 onRejected(value);
             });
         };
+        Promise.all = function (values) {
+            return new Promise(function (onFullfilled, onRejected) {
+                var i = 0, length, results = [], resolvedLength = 0, completed = false;
+                if (!util.isArray(values)) {
+                    return;
+                }
+                length = values.length;
+                for (; i < length; i++) {
+                    Promise.resolve(values[i]).then((function (index) {
+                        return function (result) {
+                            if (completed) {
+                                return;
+                            }
+                            results[index] = result;
+                            resolvedLength += 1;
+                            if (length <= resolvedLength) {
+                                completed = true;
+                                onFullfilled(results);
+                            }
+                        };
+                    })(i), function (result) {
+                        if (completed) {
+                            return;
+                        }
+                        completed = true;
+                        onRejected(result);
+                    });
+                }
+            });
+        };
         return Promise;
     })();
     Typy.Promise = Promise;
@@ -189,6 +219,13 @@ function isThenable(value) {
     return Object.prototype.toString.call(value.then) === "[object Function]";
 }
 exports.isThenable = isThenable;
+function isArray(value) {
+    if (!value) {
+        return false;
+    }
+    return Object.prototype.toString.call(value) === "[object Array]";
+}
+exports.isArray = isArray;
 //# sourceMappingURL=util.js.map
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],3:[function(require,module,exports){

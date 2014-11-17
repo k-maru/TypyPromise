@@ -38,3 +38,10 @@ export function isThenable(value: any): boolean{
     }
     return Object.prototype.toString.call(value.then) === "[object Function]";
 }
+
+export function isArray(value: any): boolean{
+    if(!value){
+        return false;
+    }
+    return Object.prototype.toString.call(value) === "[object Array]";
+}

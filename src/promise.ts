@@ -167,6 +167,40 @@ module Typy{
                 onRejected(value);
             });
         }
+
+        public static all(values: any[]): Promise {
+
+            return new Promise((onFullfilled, onRejected) => {
+                var i = 0, length, results: any = [],
+                    resolvedLength = 0,
+                    completed = false;
+                if(!util.isArray(values)){
+                    return;
+                }
+                length = values.length;
+                for(; i < length; i++){
+                    Promise.resolve(values[i]).then(((index) => {
+                        return (result) => {
+                            if(completed){
+                                return;
+                            }
+                            results[index] = result;
+                            resolvedLength += 1;
+                            if(length <= resolvedLength){
+                                completed = true;
+                                onFullfilled(results);
+                            }
+                        }
+                    })(i), (result) => {
+                        if(completed){
+                            return;
+                        }
+                        completed = true;
+                        onRejected(result);
+                    })
+                }
+            })
+        }
     }
 }
 

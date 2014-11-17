@@ -42,4 +42,11 @@ function isThenable(value) {
     return Object.prototype.toString.call(value.then) === "[object Function]";
 }
 exports.isThenable = isThenable;
+function isArray(value) {
+    if (!value) {
+        return false;
+    }
+    return Object.prototype.toString.call(value) === "[object Array]";
+}
+exports.isArray = isArray;
 //# sourceMappingURL=util.js.map

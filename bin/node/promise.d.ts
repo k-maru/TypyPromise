@@ -11,6 +11,7 @@ declare module Typy {
         "catch"(onRejected: DoneAction): Promise;
         static resolve(value: any): Promise;
         static reject(value: any): Promise;
+        static all(values: any[]): Promise;
     }
 }
 export = Typy;

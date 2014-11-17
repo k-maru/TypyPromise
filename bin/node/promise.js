@@ -136,6 +136,36 @@ var Typy;
                 onRejected(value);
             });
         };
+        Promise.all = function (values) {
+            return new Promise(function (onFullfilled, onRejected) {
+                var i = 0, length, results = [], resolvedLength = 0, completed = false;
+                if (!util.isArray(values)) {
+                    return;
+                }
+                length = values.length;
+                for (; i < length; i++) {
+                    Promise.resolve(values[i]).then((function (index) {
+                        return function (result) {
+                            if (completed) {
+                                return;
+                            }
+                            results[index] = result;
+                            resolvedLength += 1;
+                            if (length <= resolvedLength) {
+                                completed = true;
+                                onFullfilled(results);
+                            }
+                        };
+                    })(i), function (result) {
+                        if (completed) {
+                            return;
+                        }
+                        completed = true;
+                        onRejected(result);
+                    });
+                }
+            });
+        };
         return Promise;
     })();
     Typy.Promise = Promise;

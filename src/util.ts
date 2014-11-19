@@ -45,3 +45,8 @@ export function isArray(value: any): boolean{
     }
     return Object.prototype.toString.call(value) === "[object Array]";
 }
+
+export function isIterable(value: any): boolean{
+    //TODO: @@iterable の判定。しばらくは Array のみ
+    return isArray(value);
+}

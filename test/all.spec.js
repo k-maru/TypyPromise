@@ -85,8 +85,8 @@ function exec(Promise, prefix) {
 
         it(prefix + "即値でも成功", function(done){
             var promises = ["a", "b"];
-            Promise.all(promises).then(function(results){
 
+            Promise.all(promises).then(function(results){
                 expect(results[0]).toBe("a");
                 expect(results[1]).toBe("b");
                 done();
@@ -123,7 +123,7 @@ function exec(Promise, prefix) {
                 thenable1.res("a");
                 thenable2.res("b");
                 thenable3.res("c");
-            }, 0);
+            }, 10);
 
         });
 
@@ -131,13 +131,11 @@ function exec(Promise, prefix) {
             Promise.all(asyncResolve("a", 100)).then(function(results){
                 //error
                 expect(true).toBe(false);
-            }, function(){
+            }, function(err){
+                expect(err instanceof TypeError).toBe(true);
                 // expect(true).toBe(true);
-                // done();
-            });
-            setTimeout(function(){
                 done();
-            }, 150);
+            });
         });
 
         it(prefix + "単一のオブジェクト", function(done){
@@ -148,14 +146,11 @@ function exec(Promise, prefix) {
             }).then(function(results){
                 //error
                 expect(true).toBe(false);
-            }, function(){
+            }, function(err){
+                expect(err instanceof TypeError).toBe(true);
                 // expect(true).toBe(true);
-                // done();
-            });
-            setTimeout(function(){
                 done();
-            }, 250);
-
+            });
         });
 
         // it(prefix + "Map", function(done){

@@ -139,10 +139,11 @@ var Typy;
         Promise.all = function (values) {
             return new Promise(function (onFulfilled, onRejected) {
                 var i = 0, length, results = [], resolvedLength = 0, completed = false;
-                //TODO: iterableチェック
-                if (!util.isArray(values)) {
+                if (!util.isIterable(values)) {
+                    onRejected(new TypeError());
                     return;
                 }
+                //TODO: iterator用のループ
                 length = values.length;
                 for (; i < length; i++) {
                     Promise.resolve(values[i]).then((function (index) {
@@ -171,9 +172,11 @@ var Typy;
             return new Promise(function (onFulfilled, onRejected) {
                 var i = 0, length, completed = false;
                 //TODO: iterableチェック
-                if (!util.isArray(values)) {
+                if (!util.isIterable(values)) {
+                    onRejected(new TypeError());
                     return;
                 }
+                //TODO: iterator用のループ
                 length = values.length;
                 for (; i < length; i++) {
                     Promise.resolve(values[i]).then(function (value) {

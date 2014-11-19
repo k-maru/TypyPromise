@@ -49,4 +49,9 @@ function isArray(value) {
     return Object.prototype.toString.call(value) === "[object Array]";
 }
 exports.isArray = isArray;
+function isIterable(value) {
+    //TODO: @@iterable の判定。しばらくは Array のみ
+    return isArray(value);
+}
+exports.isIterable = isIterable;
 //# sourceMappingURL=util.js.map

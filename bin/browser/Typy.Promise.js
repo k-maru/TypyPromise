@@ -140,10 +140,11 @@ var Typy;
         Promise.all = function (values) {
             return new Promise(function (onFulfilled, onRejected) {
                 var i = 0, length, results = [], resolvedLength = 0, completed = false;
-                //TODO: iterableチェック
-                if (!util.isArray(values)) {
+                if (!util.isIterable(values)) {
+                    onRejected(new TypeError());
                     return;
                 }
+                //TODO: iterator用のループ
                 length = values.length;
                 for (; i < length; i++) {
                     Promise.resolve(values[i]).then((function (index) {
@@ -172,9 +173,11 @@ var Typy;
             return new Promise(function (onFulfilled, onRejected) {
                 var i = 0, length, completed = false;
                 //TODO: iterableチェック
-                if (!util.isArray(values)) {
+                if (!util.isIterable(values)) {
+                    onRejected(new TypeError());
                     return;
                 }
+                //TODO: iterator用のループ
                 length = values.length;
                 for (; i < length; i++) {
                     Promise.resolve(values[i]).then(function (value) {
@@ -250,6 +253,11 @@ function isArray(value) {
     return Object.prototype.toString.call(value) === "[object Array]";
 }
 exports.isArray = isArray;
+function isIterable(value) {
+    //TODO: @@iterable の判定。しばらくは Array のみ
+    return isArray(value);
+}
+exports.isIterable = isIterable;
 //# sourceMappingURL=util.js.map
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],3:[function(require,module,exports){

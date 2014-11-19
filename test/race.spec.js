@@ -108,7 +108,7 @@ function exec(Promise, prefix) {
             });
             setTimeout(function(){
                 thenable2.res("b");
-            }, 0);
+            }, 10);
 
         });
 
@@ -116,13 +116,11 @@ function exec(Promise, prefix) {
             Promise.race(asyncResolve("a", 100)).then(function(results){
                 //error
                 expect(true).toBe(false);
-            }, function(){
+            }, function(err){
+                expect(err instanceof TypeError).toBe(true);
                 // expect(true).toBe(true);
-                // done();
-            });
-            setTimeout(function(){
                 done();
-            }, 150);
+            });
         });
 
         it(prefix + "単一のオブジェクト", function(done){
@@ -133,16 +131,12 @@ function exec(Promise, prefix) {
             }).then(function(results){
                 //error
                 expect(true).toBe(false);
-            }, function(){
+            }, function(err){
+                expect(err instanceof TypeError).toBe(true);
                 // expect(true).toBe(true);
-                // done();
-            });
-            setTimeout(function(){
                 done();
-            }, 250);
-
+            });
         });
-
         // it(prefix + "Map", function(done){
         //     if(typeof Map === "undefined"){
         //         return;
@@ -160,9 +154,7 @@ function exec(Promise, prefix) {
         //
         // });
     });
-
 }
-
 
 var glob = typeof window !== "undefined" ? window :
            typeof global !== "undefined" ? global : {};

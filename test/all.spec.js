@@ -47,6 +47,8 @@ function exec(Promise, prefix) {
 
     describe(prefix + "all test", function () {
 
+        this.timeout(3000);
+
         it(prefix + "全部成功するプロミス", function(done){
 
             var promises = [];
@@ -56,9 +58,9 @@ function exec(Promise, prefix) {
 
             Promise.all(promises).then(function(results){
 
-                expect(results[0]).toBe("a");
-                expect(results[1]).toBe("b");
-                expect(results[2]).toBe("c");
+                expect(results[0]).to.be("a");
+                expect(results[1]).to.be("b");
+                expect(results[2]).to.be("c");
                 done();
             });
         });
@@ -68,7 +70,7 @@ function exec(Promise, prefix) {
                 rejected = false;
             promises.push(new Promise(function(resolve, reject){
                 setTimeout(function(){
-                    expect(rejected).toBe(true);
+                    expect(rejected).to.be(true);
                     done();
                 }, 1000);
             }));
@@ -78,7 +80,7 @@ function exec(Promise, prefix) {
             Promise.all(promises).then(function(results){
                 throw new Error("error");
             }, function(result){
-                expect(result).toBe("b");
+                expect(result).to.be("b");
                 rejected = true;
             });
         });
@@ -87,8 +89,8 @@ function exec(Promise, prefix) {
             var promises = ["a", "b"];
 
             Promise.all(promises).then(function(results){
-                expect(results[0]).toBe("a");
-                expect(results[1]).toBe("b");
+                expect(results[0]).to.be("a");
+                expect(results[1]).to.be("b");
                 done();
             });
         });
@@ -100,9 +102,9 @@ function exec(Promise, prefix) {
                 },
                 promises = ["a", "b", func];
             Promise.all(promises).then(function(results){
-                expect(results[0]).toBe("a");
-                expect(results[1]).toBe("b");
-                expect(results[2]).toBe(func);
+                expect(results[0]).to.be("a");
+                expect(results[1]).to.be("b");
+                expect(results[2]).to.be(func);
                 done();
             });
         });
@@ -113,9 +115,9 @@ function exec(Promise, prefix) {
                 thenable3 = createThenable();
 
             Promise.all([thenable1, thenable2, thenable3]).then(function(results){
-                expect(results[0]).toBe("a");
-                expect(results[1]).toBe("b");
-                expect(results[2]).toBe("c");
+                expect(results[0]).to.be("a");
+                expect(results[1]).to.be("b");
+                expect(results[2]).to.be("c");
 
                 done();
             });
@@ -130,10 +132,10 @@ function exec(Promise, prefix) {
         it(prefix + "配列ではなく単一の値", function(done){
             Promise.all(asyncResolve("a", 100)).then(function(results){
                 //error
-                expect(true).toBe(false);
+                expect(true).to.be(false);
             }, function(err){
-                expect(err instanceof TypeError).toBe(true);
-                // expect(true).toBe(true);
+                expect(err instanceof TypeError).to.be(true);
+                // expect(true).to.be(true);
                 done();
             });
         });
@@ -145,10 +147,10 @@ function exec(Promise, prefix) {
                 "B": asyncResolve("b", 200)
             }).then(function(results){
                 //error
-                expect(true).toBe(false);
+                expect(true).to.be(false);
             }, function(err){
-                expect(err instanceof TypeError).toBe(true);
-                // expect(true).toBe(true);
+                expect(err instanceof TypeError).to.be(true);
+                // expect(true).to.be(true);
                 done();
             });
         });
@@ -162,7 +164,7 @@ function exec(Promise, prefix) {
         //     promises.set("B", asyncResolve("b", 200));
         //     Promise.all(promises).then(function(results){
         //         //error
-        //         expect(true).toBe(false);
+        //         expect(true).to.be(false);
         //     });
         //     setTimeout(function(){
         //         done();
@@ -177,11 +179,16 @@ function exec(Promise, prefix) {
 var glob = typeof window !== "undefined" ? window :
            typeof global !== "undefined" ? global : {};
 
+if(!glob.expect && typeof require !== "undefined"){
+   glob.expect = require("expect.js");
+}
+
 if(glob.Promise){
     exec(Promise, "Native:");
 }
 
 if(typeof require !== "undefined"){
+
     exec(require("../bin/node/promise.js").Promise);
 }else{
     exec(Typy.Promise);

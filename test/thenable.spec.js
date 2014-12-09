@@ -26,21 +26,23 @@ function exec(Promise, prefix) {
 
     describe(prefix + "Promise resolve thenable test", function () {
 
+        this.timeout(3000);
+
         it(prefix + "thenableでresolve", function(done){
 
             var then = createThenable();
 
             Promise.resolve(then).then(function(value){
-                expect(value).toBe("AAA");
+                expect(value).to.be("AAA");
                 done();
             }, function(){
                 throw "error";
             });
-            expect(then.hasRes()).toBe(false);
-            expect(then.hasRej()).toBe(false);
+            expect(then.hasRes()).to.be(false);
+            expect(then.hasRej()).to.be(false);
             setTimeout(function(){
-                expect(then.hasRes()).toBe(true);
-                expect(then.hasRej()).toBe(true);
+                expect(then.hasRes()).to.be(true);
+                expect(then.hasRej()).to.be(true);
                 then.res("AAA");
             },0);
         });
@@ -52,14 +54,14 @@ function exec(Promise, prefix) {
             Promise.resolve(then).then(function(value){
                 throw "error";
             }, function(value){
-                expect(value).toBe("AAA");
+                expect(value).to.be("AAA");
                 done();
             });
-            expect(then.hasRes()).toBe(false);
-            expect(then.hasRej()).toBe(false);
+            expect(then.hasRes()).to.be(false);
+            expect(then.hasRej()).to.be(false);
             setTimeout(function(){
-                expect(then.hasRes()).toBe(true);
-                expect(then.hasRej()).toBe(true);
+                expect(then.hasRes()).to.be(true);
+                expect(then.hasRej()).to.be(true);
                 then.rej("AAA");
             },0);
         });
@@ -68,6 +70,10 @@ function exec(Promise, prefix) {
 
 var glob = typeof window !== "undefined" ? window :
            typeof global !== "undefined" ? global : {};
+
+if(!glob.expect && typeof require !== "undefined"){
+    glob.expect = require("expect.js");
+}
 
 if(glob.Promise){
     exec(Promise, "Native:");

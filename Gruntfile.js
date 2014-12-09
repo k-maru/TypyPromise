@@ -2,9 +2,10 @@ module.exports = function(grunt){
 
     grunt.loadNpmTasks("grunt-typescript");
     grunt.loadNpmTasks("grunt-browserify");
-    grunt.loadNpmTasks("grunt-jasmine-node");
+    grunt.loadNpmTasks("grunt-mocha-test");
+    grunt.loadNpmTasks("grunt-karma");
 
-    grunt.registerTask("build", ["typescript:default", "browserify:default", "jasmine_node:default"]);
+    grunt.registerTask("build", ["typescript:default", "browserify:default", "mochaTest:default", "karma:default"]);
     grunt.registerTask("watch", ["typescript:default"]);
     grunt.registerTask("default", ["build"]);
 
@@ -43,10 +44,15 @@ module.exports = function(grunt){
                 }
             }
         },
-
-        jasmine_node: {
+        mochaTest: {
             default:{
-                src: ["test/"]
+                src: ["test/**/*.spec.js"]
+            }
+        },
+        karma: {
+            default: {
+                configFile: 'karma.conf.js',
+                singleRun: true
             }
         }
     });

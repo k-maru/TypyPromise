@@ -2,7 +2,7 @@ function exec(Promise, prefix) {
 
     prefix = prefix || "";
 
-    if(!Promise.all){
+    if(!Promise.race){
         return;
     }
 
@@ -47,6 +47,8 @@ function exec(Promise, prefix) {
 
     describe(prefix + "race test", function () {
 
+        this.timeout(3000);
+
         it(prefix + "全部成功するプロミス", function(done){
 
             var promises = [];
@@ -55,7 +57,7 @@ function exec(Promise, prefix) {
             promises.push(asyncResolve("c", 100));
 
             Promise.race(promises).then(function(result){
-                expect(result).toBe("c");
+                expect(result).to.be("c");
             });
             setTimeout(function(){
                 done();
@@ -68,9 +70,9 @@ function exec(Promise, prefix) {
             promises.push(asyncResolve("c", 600));
 
             Promise.race(promises).then(function(results){
-                expect(true).toBe(false);
+                expect(true).to.be(false);
             }, function(result){
-                expect(result).toBe("b");
+                expect(result).to.be("b");
             });
             setTimeout(function(){
                 done();
@@ -80,7 +82,7 @@ function exec(Promise, prefix) {
         it(prefix + "即値でも成功", function(done){
             var promises = ["a", "b"];
             Promise.race(promises).then(function(result){
-                expect(result).toBe("a");
+                expect(result).to.be("a");
                 done();
             });
         });
@@ -92,7 +94,7 @@ function exec(Promise, prefix) {
                 },
                 promises = [func, "a", "b"];
             Promise.race(promises).then(function(result){
-                expect(result).toBe(func);
+                expect(result).to.be(func);
                 done();
             });
         });
@@ -103,7 +105,7 @@ function exec(Promise, prefix) {
                 thenable3 = createThenable();
 
             Promise.race([thenable1, thenable2, thenable3]).then(function(result){
-                expect(result).toBe("b");
+                expect(result).to.be("b");
                 done();
             });
             setTimeout(function(){
@@ -115,10 +117,10 @@ function exec(Promise, prefix) {
         it(prefix + "配列ではなく単一の値", function(done){
             Promise.race(asyncResolve("a", 100)).then(function(results){
                 //error
-                expect(true).toBe(false);
+                expect(true).to.be(false);
             }, function(err){
-                expect(err instanceof TypeError).toBe(true);
-                // expect(true).toBe(true);
+                expect(err instanceof TypeError).to.be(true);
+                // expect(true).to.be(true);
                 done();
             });
         });
@@ -130,10 +132,10 @@ function exec(Promise, prefix) {
                 "B": asyncResolve("b", 200)
             }).then(function(results){
                 //error
-                expect(true).toBe(false);
+                expect(true).to.be(false);
             }, function(err){
-                expect(err instanceof TypeError).toBe(true);
-                // expect(true).toBe(true);
+                expect(err instanceof TypeError).to.be(true);
+                // expect(true).to.be(true);
                 done();
             });
         });
@@ -146,7 +148,7 @@ function exec(Promise, prefix) {
         //     promises.set("B", asyncResolve("b", 200));
         //     Promise.all(promises).then(function(results){
         //         //error
-        //         expect(true).toBe(false);
+        //         expect(true).to.be(false);
         //     });
         //     setTimeout(function(){
         //         done();
@@ -158,6 +160,10 @@ function exec(Promise, prefix) {
 
 var glob = typeof window !== "undefined" ? window :
            typeof global !== "undefined" ? global : {};
+
+if(!glob.expect && typeof require !== "undefined"){
+   glob.expect = require("expect.js");
+}
 
 if(glob.Promise){
     exec(Promise, "Native:");

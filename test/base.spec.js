@@ -4,14 +4,16 @@ function exec(Promise, prefix) {
 
     describe(prefix + "Promise base test", function () {
 
+        this.timeout(3000);
+
         it(prefix + "チェーンのテスト", function (done) {
             (new Promise(function (resolve, reject) {
                 resolve("AAA");
             })).then(function (result) {
-                expect(result).toEqual("AAA");
+                expect(result).to.eql("AAA");
                 return "BBB";
             }).then(function (result) {
-                expect(result).toEqual("BBB");
+                expect(result).to.eql("BBB");
                 done();
             });
         });
@@ -22,10 +24,10 @@ function exec(Promise, prefix) {
             })).then(function (result) {
                 fail();
             }, function (result) {
-                expect(result.message).toEqual("AAA");
+                expect(result.message).to.eql("AAA");
                 return "BBB"
             }).then(function (result) {
-                expect(result).toEqual("BBB");
+                expect(result).to.eql("BBB");
                 done();
             });
         });
@@ -34,10 +36,10 @@ function exec(Promise, prefix) {
             (new Promise(function (resolve, reject) {
                 reject(new Error("AAA"));
             }))["catch"](function (result) {
-                expect(result.message).toEqual("AAA");
+                expect(result.message).to.eql("AAA");
                 return "BBB"
             }).then(function (result) {
-                expect(result).toEqual("BBB");
+                expect(result).to.eql("BBB");
                 done();
             });
         });
@@ -47,15 +49,15 @@ function exec(Promise, prefix) {
 
                 //PhantomJSのbindがshimなためFunction#bindが実装されているもののみ
                 if(Function.prototype.bind){
-                    expect(resolve.length).toEqual(1);
+                    expect(resolve.length).to.eql(1);
                 }
                 resolve("AAA", "bbb");
             })).then(function (result, result2) {
-                expect(result).toEqual("AAA");
-                expect(result2).toBeUndefined();
+                expect(result).to.eql("AAA");
+                expect(result2).to.be(undefined);
                 return "BBB";
             }).then(function (result) {
-                expect(result).toEqual("BBB");
+                expect(result).to.eql("BBB");
                 done();
             });
         });
@@ -64,14 +66,14 @@ function exec(Promise, prefix) {
             (new Promise(function (resolve, reject) {
                 //PhantomJSのbindがshimなためFunction#bindが実装されているもののみ
                 if(Function.prototype.bind){
-                    expect(reject.length).toEqual(1);
+                    expect(reject.length).to.eql(1);
                 }
                 reject(new Error("AAA"), new Error("BBB"));
             })).then(function (result) {
                 fail();
             }, function (result, result2) {
-                expect(result.message).toEqual("AAA");
-                expect(result2).toBeUndefined();
+                expect(result.message).to.eql("AAA");
+                expect(result2).to.be(undefined);
                 done();
             });
         });
@@ -80,12 +82,12 @@ function exec(Promise, prefix) {
             (new Promise(function (resolve, reject) {
                 //PhantomJSのbindがshimなためFunction#bindが実装されているもののみ
                 if(Function.prototype.bind){
-                    expect(reject.length).toEqual(1);
+                    expect(reject.length).to.eql(1);
                 }
                 reject(new Error("AAA"), new Error("BBB"));
             }))["catch"](function (result, result2) {
-                expect(result.message).toEqual("AAA");
-                expect(result2).toBeUndefined();
+                expect(result.message).to.eql("AAA");
+                expect(result2).to.be(undefined);
                 done();
             });
         });
@@ -94,7 +96,7 @@ function exec(Promise, prefix) {
             (new Promise(function (resolve, reject) {
                 var glob = typeof window !== "undefined" ? window :
                            typeof global !== "undefined" ? global : {};
-                expect(this).toEqual(glob);
+                expect(this).to.eql(glob);
                 done();
             }));
         });
@@ -106,7 +108,7 @@ function exec(Promise, prefix) {
                 var glob = typeof window !== "undefined" ? window :
                            typeof global !== "undefined" ? global : {};
 
-                expect(this).toEqual(glob);
+                expect(this).to.eql(glob);
                 done();
             }));
         });
@@ -118,7 +120,7 @@ function exec(Promise, prefix) {
                 var glob = typeof window !== "undefined" ? window :
                            typeof global !== "undefined" ? global : {};
 
-                expect(this).toEqual(glob);
+                expect(this).to.eql(glob);
                 done();
             }));
         });
@@ -130,7 +132,7 @@ function exec(Promise, prefix) {
                 var glob = typeof window !== "undefined" ? window :
                            typeof global !== "undefined" ? global : {};
 
-                expect(this).toEqual(glob);
+                expect(this).to.eql(glob);
                 done();
             }));
         });
@@ -141,11 +143,11 @@ function exec(Promise, prefix) {
                 result = "BBB";
                 resolve();
             }).then(function(r){
-                expect(result).toEqual("CCC");
+                expect(result).to.eql("CCC");
                 done();
             }));;
 
-            expect(result).toEqual("BBB");
+            expect(result).to.eql("BBB");
             result = "CCC";
         });
 
@@ -159,19 +161,19 @@ function exec(Promise, prefix) {
            });
 
            p.then(function(r){
-               expect(result).toEqual("AAA");
+               expect(result).to.eql("AAA");
                result = "BBB";
            }).then(function(){
-               expect(result).toEqual("ZZZ");
+               expect(result).to.eql("ZZZ");
                result = "CCC";
            }).then(function(){
-               expect(result).toEqual("CCC");
+               expect(result).to.eql("CCC");
                //result = "DDD";
                done();
            });
 
            p.then(function(r){
-               expect(result).toEqual("BBB");
+               expect(result).to.eql("BBB");
                result = "ZZZ";
 
            });
@@ -183,10 +185,10 @@ function exec(Promise, prefix) {
             })).then(function(result){
                 fail();
             }).then(function(result){
-//                    expect(result.message).toEqual("AAA");
+//                    expect(result.message).to.eql("AAA");
 //                    done();
             }).then(undefined, function(result){
-                expect(result.message).toEqual("AAA");
+                expect(result.message).to.eql("AAA");
                 done();
             });
         });
@@ -196,7 +198,7 @@ function exec(Promise, prefix) {
             (new Promise(function(){
                 throw new Error("AAA");
             }))["catch"](function(err){
-                expect(err.message).toEqual("AAA");
+                expect(err.message).to.eql("AAA");
                 done();
             });
 
@@ -207,10 +209,10 @@ function exec(Promise, prefix) {
             (new Promise(function(resolve){
                 resolve("AAA");
             })).then(function(result){
-                expect(result).toEqual("AAA");
+                expect(result).to.eql("AAA");
                 throw new Error("BBB");
             })["catch"](function(err){
-                expect(err.message).toEqual("BBB");
+                expect(err.message).to.eql("BBB");
                 done();
             });
         });
@@ -220,10 +222,10 @@ function exec(Promise, prefix) {
             (new Promise(function(resolve, reject){
                 reject(new Error("AAA"));
             }))["catch"](function(result){
-                expect(result.message).toEqual("AAA");
+                expect(result.message).to.eql("AAA");
                 throw new Error("BBB");
             })["catch"](function(err){
-                expect(err.message).toEqual("BBB");
+                expect(err.message).to.eql("BBB");
                 done();
             });
         });
@@ -235,7 +237,7 @@ function exec(Promise, prefix) {
                 },1);
 
             })).then(function(result){
-                expect(result).toEqual("AAA");
+                expect(result).to.eql("AAA");
                 done();
             });
         });
@@ -250,7 +252,7 @@ function exec(Promise, prefix) {
                 resolve(p1);
             });
             p.then(function(result){
-                expect(result).toEqual("AAA");
+                expect(result).to.eql("AAA");
                 done();
             });
         });
@@ -265,7 +267,7 @@ function exec(Promise, prefix) {
                 resolve(p1);
             });
             p.then(undefined, function(result){
-                expect(result).toEqual("AAA");
+                expect(result).to.eql("AAA");
                 done();
             });
         });
@@ -280,7 +282,7 @@ function exec(Promise, prefix) {
                 reject(p1);
             });
             p.then(undefined, function(result){
-                expect(result).toEqual(p1);
+                expect(result).to.eql(p1);
                 done();
             });
         });
@@ -295,7 +297,7 @@ function exec(Promise, prefix) {
                 reject(p1);
             });
             p.then(undefined, function(result){
-                expect(result).toEqual(p1);
+                expect(result).to.eql(p1);
                 done();
             });
         });
@@ -304,6 +306,10 @@ function exec(Promise, prefix) {
 
 var glob = typeof window !== "undefined" ? window :
            typeof global !== "undefined" ? global : {};
+
+if(!glob.expect && typeof require !== "undefined"){
+   glob.expect = require("expect.js");
+}
 
 if(glob.Promise){
     exec(Promise, "Native:");

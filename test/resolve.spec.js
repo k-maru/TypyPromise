@@ -4,9 +4,11 @@ function exec(Promise, prefix) {
 
     describe(prefix + "Promise resolve test", function () {
 
+        this.timeout(3000);
+
         it(prefix + "即値のテスト", function (done) {
             Promise.resolve("aaa").then(function(result){
-                expect(result).toEqual("aaa");
+                expect(result).to.eql("aaa");
                 done();
             });
         });
@@ -16,7 +18,7 @@ function exec(Promise, prefix) {
             Promise.resolve(new Promise(function(onfulfilled){
                 onfulfilled("aaa");
             })).then(function(result){
-                expect(result).toEqual("aaa");
+                expect(result).to.eql("aaa");
                 done();
             });
         });
@@ -25,7 +27,7 @@ function exec(Promise, prefix) {
             Promise.resolve(new Promise(function(onfulfilled, onrejected){
                 onrejected("aaa");
             }))["catch"](function(result){
-                expect(result).toEqual("aaa");
+                expect(result).to.eql("aaa");
                 done();
             });
         });
@@ -33,9 +35,11 @@ function exec(Promise, prefix) {
 
     describe(prefix + "Promise reject test", function () {
 
+        this.timeout(3000);
+
         it(prefix + "即値のテスト", function (done) {
             Promise.reject("aaa").then(undefined, function(result){
-                expect(result).toEqual("aaa");
+                expect(result).to.eql("aaa");
                 done();
             });
         });
@@ -45,7 +49,7 @@ function exec(Promise, prefix) {
                 onrejected("aaa");
             });
             Promise.reject(p).then(undefined, function(result){
-                expect(result).toEqual(p);
+                expect(result).to.eql(p);
                 done();
             });
         });
@@ -55,7 +59,7 @@ function exec(Promise, prefix) {
                 onfulfilled("aaa");
             });
             Promise.reject(p).then(undefined, function(result){
-                expect(result).toEqual(p);
+                expect(result).to.eql(p);
                 done();
             });
         });
@@ -65,6 +69,10 @@ function exec(Promise, prefix) {
 
 var glob = typeof window !== "undefined" ? window :
            typeof global !== "undefined" ? global : {};
+
+if(!glob.expect && typeof require !== "undefined"){
+   glob.expect = require("expect.js");
+}
 
 if(glob.Promise){
     exec(Promise, "Native:");
